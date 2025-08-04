@@ -31,7 +31,7 @@ This project implements real-time **FIR** and **IIR** filters on a **ZedBoard (Z
 │ ├── iir_filter.v # IIR filter module
 │ ├── DA2_Top.v # Top-level module integrating DA2 output
 │ ├── da2_dual.v # DAC communication module
-│ ├── clkDiv25en.v # Clock divider (25 enabled)
+│ ├── clkDiv25en.v # Clock divider
 
 
 ## 🔍 How It Works
