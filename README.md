@@ -1,62 +1,74 @@
-# FIR-and-IIR-filter
-# Real-Time FIR and IIR Filters on FPGA
+# Real-Time FIR & IIR Filter Implementation on ZedBoard FPGA
 
-This project implements **real-time FIR and IIR digital filters** on the **ZedBoard FPGA** (xc7z020clg484-1) using **Vivado**. It captures audio input through a PMOD microphone and outputs filtered audio using a PMOD DAC. The system supports runtime configuration of filter coefficients and enables direct comparison with software-based filtering for validation and performance analysis.
+This project implements real-time **FIR** and **IIR** filters on a **ZedBoard (Zynq-7000)** FPGA. The system reads audio input from a **PMOD MIC**, processes it using digital filters with **configurable coefficients**, and outputs the filtered signal through a **PMOD DA2** DAC interface. Designed in Verilog and synthesized using Vivado, this project demonstrates practical signal processing on hardware.
 
-## 🎯 Objectives
+---
 
-- Implement real-time **FIR** and **IIR** filters on FPGA
-- Support **dynamic coefficient configuration**
-- Perform **live audio filtering** using PMOD peripherals
-- Compare hardware and software filtered outputs for performance analysis
+## 🎯 Features
 
-## 🛠️ Tools & Hardware
+- **Real-time FIR and IIR digital filtering**
+- Audio input via **PMOD MIC**
+- Audio output via **PMOD DA2**
+- **Dynamic coefficient configuration** (runtime adjustable)
+- **Comparison with software-based filtering** (for validation)
+- Designed for **ZedBoard (xc7z020clg484-1)**
 
-- **FPGA Board**: ZedBoard (Zynq-7000 SoC, xc7z020clg484-1)
-- **Software**: Vivado (for design and synthesis), MATLAB/Python (for comparison)
-- **Peripherals**:
-  - [PMOD MIC3](https://digilent.com/shop/pmod-mic3-digital-microphone/)
-  - [PMOD DA2](https://digilent.com/shop/pmod-da2-four-channel-12-bit-dac/)
+---
 
-## ⚙️ System Architecture
+## 🛠️ Hardware Architecture
 
-[PMOD MIC] → [ADC Interface] → [FIR/IIR Filter on FPGA] → [DAC Interface] → [PMOD DA2]
-↑
-[Coefficient Configuration (HDL or AXI-mapped)]
+- **PMOD MIC** → ADC (onboard) → FPGA
+- **FPGA**:
+  - FIR / IIR Filter Modules
+  - Coefficient Loader
+  - Synchronization Logic
+- **PMOD DA2** → DAC interface (SPI-like protocol)
+- **Clock divider** to match sampling frequency
 
-## 🧠 Filter Architecture
-
-### FIR Filter
-- Finite impulse response
-- Feedforward structure only
-- Stable and can be designed with linear phase
-- More coefficients required for sharp roll-off
-
-### IIR Filter
-- Infinite impulse response with feedback
-- Requires fewer coefficients for comparable performance
-- Higher efficiency but potential for instability
-- Designed based on analog filter prototypes (e.g., Butterworth)
-
-## ✅ Features
-- Real-time digital filtering on audio inputs
-- Configurable coefficients (HDL parameters or AXI-lite interface)
-- ILA-based signal probing for debug and verification
-- Software reference models for comparison
-
-## 🧪 Validation
-- Input signals filtered using both FPGA and MATLAB/Python
-- Time-domain and frequency-domain plots analyzed
-- Internal FPGA signals observed using Vivado ILA
-
-## 🚀 Getting Started
-1. Clone the repository and open in Vivado
-2. Connect PMOD MIC to JA, PMOD DA2 to JB on ZedBoard
-3. Generate bitstream and program the FPGA
-4. Inject test audio or signal into PMOD MIC
-5. Observe output via oscilloscope or speaker through PMOD DA2
+## 📂 Directory Structure
+├── src/
+│ ├── fir_filter.v # FIR filter module
+│ ├── iir_filter.v # IIR filter module
+│ ├── DA2_Top.v # Top-level module integrating DA2 output
+│ ├── da2_dual.v # DAC communication module
+│ ├── clkDiv25en.v # Clock divider (25 enabled)
 
 
-**Developed by**: Prathamesh Pise  
-**Institute**: BITS Pilani, Goa Campus
+## 🔍 How It Works
+
+1. **Input**: PMOD MIC samples are digitized and fed into the filter module.
+2. **Filtering**: Either FIR or IIR filter is selected. Coefficients can be preloaded or changed dynamically.
+3. **Output**: The filtered output is serialized and sent to PMOD DA2 using a clocked interface (`SYNC`, `SCLK`, `SDATA`).
+4. **Timing**: A clock divider ensures correct timing for DAC communication.
+
+---
+
+## 📊 Filter Comparison
+
+Filter output was validated against MATLAB/NumPy implementations for accuracy. The hardware output closely follows software-generated signals, ensuring correctness and stability.
+
+---
+
+## ✅ Synthesis & Testing
+
+- **Tool Used**: Vivado 2023.1
+- **Target Device**: `xc7z020clg484-1`
+- **Simulation**: Testbenches for both FIR and IIR filters validate functional correctness.
+- **Synthesis**: Successfully synthesized and deployed on ZedBoard
+
+---
+
+## 📜 License
+
+This project is open-source under the MIT License.
+
+---
+
+## 👤 Author
+
+Prathamesh Pise  
+B.E. (Hons.) Electronics and Instrumentation  
+BITS Pilani, Goa Campus
+
+---
 
